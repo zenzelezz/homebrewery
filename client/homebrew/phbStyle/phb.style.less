@@ -328,12 +328,13 @@ body {
 		list-style-type : none;
 	}
 	//Column Break
-	pre, code{
+	pre{
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
 	}
+	
 	//Avoid breaking up
 	p,blockquote,table{
 		z-index                     : 15;
@@ -448,6 +449,19 @@ body {
 .phb pre+.descriptive{
 	margin-top : 8px;
 }
+
+//************************************
+// *       INLINE CODE BLOCKS
+// ************************************/
+.phb code{
+    font-family: "Courier New", Courier, monospace;
+    font-size: 90%;
+    padding: 2px 4px;
+    color: #58180d;
+    background-color: #faf7ea;
+    border-radius: 4px;
+}
+
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
