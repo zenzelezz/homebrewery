@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const Markdown = require('marked');
+const lexer = new Markdown.Lexer();
 
 // Copied directly from Marked helpers.js source with permission
 const splitCells = function(tableRow, count) {
@@ -105,6 +106,8 @@ const tokenizer = {
 	}
 };
 
+
+
 /*renderer.code = function (code, infostring, escaped) {
 	if(code == ''){
 		return '<pre><code>\n</code></pre>';
@@ -113,6 +116,36 @@ const tokenizer = {
 }*/
 
 Markdown.use({ renderer, tokenizer });
+
+// Allow invalid bold and italicize spacing
+
+var caret = /(^|[^\[])\^/g;
+
+function edit(regex, opt) {
+	regex = regex.source || regex;
+	opt = opt || '';
+	var obj = {
+		replace: function replace(name, val) {
+			val = val.source || val;
+			val = val.replace(caret, '$1');
+			regex = regex.replace(name, val);
+			return obj;
+		},
+		getRegex: function getRegex() {
+			return new RegExp(regex, opt);
+		}
+	};
+	return obj;
+}
+
+var _punctuation = '!"#$%&\'()*+\\-./:;<=>?@\\[^_{|}~';
+lexer.tokenizer.rules.inline.strong = /^__([^\s_])__(?!_)|^\*\*([^\s*])\*\*(?!\*)|^__([^\s][\s\S]*?[^\s])__(?!_)|^\*\*([\s\S]*?)\*\*(?!\*)/;
+lexer.tokenizer.rules.inline.em = /^_([^\s_])_(?!_)|^_([^\s_<][\s\S]*?[^\s_])_(?!_|[^\s,punctuation])|^_([^\s_<][\s\S]*?[^\s])_(?!_|[^\s,punctuation])|^\*([^\s*<\[])\*(?!\*)|^\*([^<][\s\S]*?[^\[\*])\*(?![\]`punctuation])|^\*([^*<\[][\s\S]*)\*(?!\*)/;
+lexer.tokenizer.rules.inline.em = edit(lexer.tokenizer.rules.inline.em).replace(/punctuation/g, _punctuation).getRegex();
+
+///========================///
+
+
 
 const sanatizeScriptTags = (content)=>{
 	return content
