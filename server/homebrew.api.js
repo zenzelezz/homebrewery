@@ -133,7 +133,7 @@ const newGoogleBrew = async (req, res, next)=>{
 const updateGoogleBrew = async (req, res, next)=>{
 	let oAuth2Client;
 
-	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
+	try {	oAuth2Client = await GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 
 	const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, req.body);
 
@@ -147,6 +147,6 @@ router.put('/api/update/:id', updateBrew);
 router.put('/api/updateGoogle/:id', updateGoogleBrew);
 router.delete('/api/:id', deleteBrew);
 router.get('/api/remove/:id', deleteBrew);
-router.get('/api/removeGoogle/:id', (req, res)=>{GoogleActions.deleteGoogleBrew(req, res, req.params.id);});
+router.get('/api/removeGoogle/:id', async (req, res, next)=>{await GoogleActions.deleteGoogleBrew(req, res, req.params.id).catch(next)}); //.catch(next) sends error on to the next middleware, which ultimately ends in the custom error handler on server.js
 
 module.exports = router;

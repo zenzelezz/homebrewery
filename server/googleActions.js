@@ -13,7 +13,7 @@ const config = require('nconf')
 
 GoogleActions = {
 
-	authCheck : (account, res)=>{
+	authCheck : async (account, res)=>{
 		if(!account || !account.googleId){ // If not signed into Google
 			const err = new Error('Not Signed In');
 			err.status = 401;
@@ -311,7 +311,7 @@ GoogleActions = {
 
 	deleteGoogleBrew : async (req, res, id)=>{
 
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
+		oAuth2Client = await GoogleActions.authCheck(req.account, res);
 		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
 		const googleId = id.slice(0, -12);
